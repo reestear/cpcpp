@@ -85,6 +85,11 @@ build() {
 
 run() {
   if [ -f "$output" ]; then
+	if [ $tests -lt 1 ]; then
+	  echo -e "${RED}Error: Invalid or missing number of tests after '-t' flag.${NC}"
+      exit 1
+	fi
+
     if [ $tests -lt 2 ]; then
       color_output ./"$output"
       exit 0

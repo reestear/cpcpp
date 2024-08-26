@@ -75,5 +75,21 @@ cpcpp - is an useful script which will enhance your productivity of solving Comp
     ```bash
     % cpcpp <filename> --tests=<X>
     ```
+    or
+    ```bash
+    % cpcpp <filename> -t <X>
+    ```
     Where, `X` stays for the number of tests which should be executed *i.e how many times the program will be executed*.
+    <br/>
+
+    Keep in mind that `--tests=` has a higher priority over `-t`. Also, if no natural number representing number of tests is provided after `-t` flag then an error message will be displayed.
+5. **You can combine flags**
+    ```
+    % cpcpp <filename> -r -t 5
+    ```
+    This will run your existing executable on 5 tests.
+    ```
+    % cpcpp <filename> -b -r -t 5
+    ```
+    This will build and run your code on 5 tests. *(Essentially the same as `cpcpp <filename> -t 5`)*
 
