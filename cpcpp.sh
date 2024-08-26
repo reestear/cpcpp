@@ -21,21 +21,32 @@ tests=1
 flags=1
 args=("$@")
 
-# Check if -b flag is present anywhere in the arguments
 if [[ " $@ " =~ " -b " ]]; then
   build_set=1
   flags=$(( $flags + 1 ))
   args=("${args[@]/-b/}")
 fi
 
-# Check if -r flag is present anywhere in the arguments
 if [[ " $@ " =~ " -r " ]]; then
   run_set=1
   flags=$(( $flags + 1 ))
   args=("${args[@]/-r/}")
 fi
 
-# Check if --tests= is present anywhere in the arguments
+for i in "${!args[@]}"; do
+  if [[ "${args[i]}" == "-t" ]]; then
+    if [[ -n "${args[i+1]}" && "${args[i+1]}" =~ ^[0-9]+$ ]]; then
+      tests="${args[i+1]}"
+      flags=$(( $flags + 2 ))
+      unset 'args[i]' 'args[i+1]'
+    else
+      echo -e "${RED}Error: Invalid or missing number of tests after '-t' flag.${NC}"
+      exit 1
+    fi
+    break
+  fi
+done
+
 for i in "${!args[@]}"; do
   if [[ "${args[i]}" =~ --tests= ]]; then
     tests="${args[i]#*=}"
@@ -61,11 +72,9 @@ build() {
     cmd="g++ $filename -o $output$additional_flags"
   fi
 
-  # Compiling
   echo -e "${BLUE}${cmd}${NC}"
   eval $cmd
 
-  # Check if compilation was successful
   if [ $? -eq 0 ]; then
     echo -e "${GREEN}Compilation completed.${NC}"
   else
